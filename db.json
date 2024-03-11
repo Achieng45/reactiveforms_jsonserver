@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "23",
+      "firstname": "Jane Ah",
+      "lastname": "Doe",
+      "email": "janedoe@gmail.com"
+    },
+    {
+      "id": "7084",
+      "firstname": "Mercy",
+      "lastname": "Akinyi",
+      "email": "mercy@gmail"
+    },
+    {
+      "id": "ad11",
+      "firstname": "Wesley",
+      "lastname": "Mboya",
+      "email": "wesley@gmail"
+    },
+    {
+      "id": "9c15",
+      "firstname": "Brian",
+      "lastname": "Stephen",
+      "email": "brian@gmail"
+    }
+  ]
+}
