@@ -17,9 +17,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
 })
 export class CreateEmployeeComponent implements OnInit {
 
- employees:any
- newEmployee:any={}
- selectedEmployee:any={}
+ employees:any[]=[];
+ newEmployee:any={};
+ selectedEmployee:any={};
  isAddingEmployee:boolean=false;
  modalRef!: NgbModalRef;
 
@@ -27,12 +27,14 @@ export class CreateEmployeeComponent implements OnInit {
  itemsPerPage=2;
  totalItems=5;
  active=1;
+ page=1;
+ 
  
  closeResult = '';
   content!: TemplateRef<any>;
 updateEmployeeModal!: TemplateRef<any>;
 deleteEmployeeModal!: TemplateRef<any>;
-page: any;
+
 
  // myform:FormGroup;
 
@@ -46,7 +48,8 @@ page: any;
  
 
   FetchEmployees(){
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    
+   
     this.employeeservice.getEmployees().subscribe((data:any)=>{
     this.employees=data;
     
@@ -66,19 +69,24 @@ page: any;
 
   AddEmployee(){
     this.employeeservice.createUser(this.newEmployee).subscribe((response)=>{
+      
+    
+    // If the new employee should be on the current page, insert it
+    
       this.employees.push(response)
       this.newEmployee={};
       this.modalRef.close();
-      this.isAddingEmployee=false;
+      this.totalItems++;
+    
     });
   }
- toggleAddEmployeeForm(){
-  this.isAddingEmployee=!this.isAddingEmployee;
-  if(!this.isAddingEmployee){
-    this.newEmployee={}
-  }
+//  toggleAddEmployeeForm(){
+//   this.isAddingEmployee=!this.isAddingEmployee;
+//   if(!this.isAddingEmployee){
+//     this.newEmployee={}
+//   }
 
- }
+//  }
  openAddEmployeeModal(AddEmployeeModal:TemplateRef<any>){
   this.newEmployee={}
   this.modalRef=this.modalService.open(AddEmployeeModal,{ariaLabelledBy:'modal-basic-title'});

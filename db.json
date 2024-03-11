@@ -1,34 +1,34 @@
 {
   "users": [
     {
-      "id": "23",
-      "firstname": "Jane Ah",
-      "lastname": "Doe",
-      "email": "janedoe@gmail.com"
-    },
-    {
       "id": "7084",
       "firstname": "Mercy",
       "lastname": "Akinyi",
       "email": "mercy@gmail"
     },
     {
-      "id": "ad11",
-      "firstname": "Wesley",
+      "id": "c1b6",
+      "firstname": "John",
+      "lastname": "Fortune",
+      "email": "john@gmail.com"
+    },
+    {
+      "id": "44bf",
+      "firstname": "Jeremy",
+      "lastname": "Githuba",
+      "email": "jeremy@gmail.com"
+    },
+    {
+      "id": "b370",
+      "firstname": "Reuben",
       "lastname": "Mboya",
-      "email": "wesley@gmail"
+      "email": "emily@gmail.com"
     },
     {
-      "id": "9c15",
-      "firstname": "Brian",
-      "lastname": "Stephen",
-      "email": "brian@gmail"
-    },
-    {
-      "id": "4f10",
-      "firstname": "Stacy",
-      "lastname": "Foi",
-      "email": "stacy@gmail"
+      "id": "8087",
+      "firstname": "Jemima",
+      "lastname": "Network",
+      "email": "jemimah@gmail"
     }
   ]
 }

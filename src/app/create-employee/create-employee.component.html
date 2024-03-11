@@ -23,8 +23,8 @@
         </tr>
     </thead>
     <tbody>
-       @for (employee of employees | slice: (page-1) * itemsPerPage : currentPage * itemsPerPage; track employee){
-        <tr *ngFor="let employee of employees">
+      
+        <tr *ngFor="let employee of employees | slice:(page-1)* itemsPerPage : page* itemsPerPage; track employee">
 
             <td>{{employee.firstname}}</td>
             <td class="px-4">{{employee.lastname}}</td>
@@ -42,14 +42,15 @@
             
 
         </tr>
-      }
+      
     </tbody>
   
 </table>
 
-<ngb-pagination [(page)]="currentPage"
+
+<ngb-pagination [(page)]="page"
                 [pageSize]="itemsPerPage"
-                [collectionSize]="totalItems" />
+                [collectionSize]="employees.length" /> 
 
 </div>
 </div>
