@@ -1,0 +1,147 @@
+
+<ul ngbNav #nav="ngbNav"[(activeId)]="active" class="nav-tabs">
+<li [ngbNavItem]="1">
+  <button  ngbNavLink> Employees</button>
+<div class="container">
+
+<div class="row mb-2">
+
+   <h2 class="text-center">Employee List</h2>
+
+
+<div class="col">
+
+<table class="table table-striped table-bordered table-hover">
+ 
+    <thead>
+        <tr>
+            <th >First Name</th>
+            <th class="px-4">Last Name</th>
+            <th class="px-4">Email</th>
+            <th class="px-2">Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>
+      
+        <tr *ngFor="let employee of employees | slice:(page-1)* itemsPerPage : page* itemsPerPage; track employee">
+
+            <td>{{employee.firstname}}</td>
+            <td class="px-4">{{employee.lastname}}</td>
+            <td class="px-4"> {{employee.email}}</td>
+            <td>
+                
+                <button (click)="openViewEmployeeModal(viewEmployeeModal,employee)" class="btn btn-info">View</button>
+              <button (click)="openUpdateEmployeeModal(AddorupdateEmployeeModal,employee)" class="btn btn-primary" style="margin-left: 10px;">Update</button>
+              
+              <button (click)="openDeleteEmployeeModal(deleteEmployeeModal,employee)" class="btn btn-danger" style="margin-left: 10px;">Delete</button>
+            </td>
+            
+
+        </tr>
+      
+    </tbody>
+  
+</table>
+
+
+<ngb-pagination [(page)]="page"
+                [pageSize]="itemsPerPage"
+                [collectionSize]="employees.length" /> 
+
+</div>
+</div>
+</div>
+</li>
+<li [ngbNavItem]="2">
+  <button ngbNavLink   (click)="openAddEmployeeModal(AddorupdateEmployeeModal)">Add Employee</button>
+  <ng-template ngbNavContent></ng-template>
+  </li>
+</ul>
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+ <ng-template #AddorupdateEmployeeModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ action === 'add' ? 'Add Employee' : 'Update Employee' }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="col">
+      <form [formGroup]="employeeForm" (ngSubmit)="action === 'add' ? AddEmployee() : Updateemployee()">
+        <div class="form-group">
+          <label for="firstname">First Name</label>
+          <input type="text" class="form-control" formControlName="firstname">
+          <div *ngIf="firstnameCtrl.invalid && (firstnameCtrl.dirty || firstnameCtrl.touched)" class="alert alert-danger">
+            <div *ngIf="firstnameCtrl.errors?.required">First Name is required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="lastname">Last Name</label>
+          <input type="text" class="form-control" formControlName="lastname">
+          <div *ngIf="lastnameCtrl.invalid && (lastnameCtrl.dirty || lastnameCtrl.touched)" class="alert alert-danger">
+            <div *ngIf="lastnameCtrl.errors?.required">Last Name is required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" formControlName="email">
+          <div *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="alert alert-danger">
+            <div *ngIf="emailCtrl.errors?.required">Email is required</div>
+            <div *ngIf="emailCtrl.errors?.email">Invalid email format</div>
+          </div>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary" [disabled]="employeeForm.invalid">
+            {{ action === 'add' ? 'Add' : 'Update' }} Employee
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('close click')">Close</button>
+  </div>
+</ng-template>
+
+
+  <ng-template #viewEmployeeModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Employee Details</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <p><strong>First Name:</strong> {{ selectedEmployee?.firstname }}</p>
+        <p><strong>Last Name:</strong> {{ selectedEmployee?.lastname }}</p>
+        <p><strong>Email:</strong> {{ selectedEmployee?.email }}</p>
+      
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('close click')">Close</button>
+    </div>
+  </ng-template>
+
+
+  <ng-template #deleteEmployeeModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Delete Employee</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure you want to delete this employee?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
+      <button type="button" class="btn btn-danger" (click)="DeleteEmployee()">Delete</button>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)="modal.close('close click')">Close</button>
+    </div>
+  </ng-template>

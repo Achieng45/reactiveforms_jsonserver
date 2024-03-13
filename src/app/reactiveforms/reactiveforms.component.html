@@ -1,1 +1,26 @@
-<p>reactiveforms works!</p>
+<div class="container">
+
+<form class="form_style" [formGroup]="myForm" (ngSubmit)="SaveData()">
+    <div>
+      <label>Name:</label>
+      <input type="text" formControlName="name"  class="form-control" name="name" id="name">
+    </div>
+    <div>
+      <label>Email:</label>
+      <input type="email" formControlName="email"  class="form-control" name="email" id="email">
+    </div>
+     <div>
+    <button type="submit" class="btn btn-primary" >Submit</button>
+</div>
+  </form>
+</div>
+
+<div class="container m-5" style="border:12px solid black">
+  <div class="row m-3"style="border:6px solid green">
+    <div class="col">Heaven</div>
+    <div class="col">Hell</div>
+    <div class="col">Heaven</div>
+    <div class="col">Hell</div>
+  </div>
+<div class="row" style="border:2px solid black">Tajiri wangu</div>
+</div>

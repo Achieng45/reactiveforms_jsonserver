@@ -1,3 +1,12 @@
+import { ReactiveFormsModule } from '@angular/forms';
 import { Routes } from '@angular/router';
+import { ReactiveformsComponent } from './reactiveforms/reactiveforms.component';
+import { CreateEmployeeComponent } from './create-employee/create-employee.component';
 
-export const routes: Routes = [];
+
+export const routes: Routes = [
+
+    {path:'json',component:ReactiveformsComponent},
+    {path:'crud',component:CreateEmployeeComponent},
+   
+];
