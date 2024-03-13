@@ -2,24 +2,47 @@ import { Component, OnInit, TemplateRef, inject } from '@angular/core';
 import { EmployeeServiceService } from '../employee-service.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgModel, ɵInternalFormsSharedModule } from '@angular/forms';
+import { FormsModule, NgModel, ReactiveFormsModule, ɵInternalFormsSharedModule } from '@angular/forms';
 import { ModalDismissReasons,NgbActiveModal,NgbDatepickerModule, NgbModal, NgbModalRef, NgbModule, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { response } from 'express';
 import { error } from 'console';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-create-employee',
   standalone: true,
-  imports: [HttpClientModule,CommonModule,FormsModule,NgbModule,NgxPaginationModule],
+  imports: [HttpClientModule,CommonModule,FormsModule,NgbModule,NgxPaginationModule,ReactiveFormsModule],
   templateUrl: './create-employee.component.html',
   styleUrl: './create-employee.component.css'
 })
-export class CreateEmployeeComponent implements OnInit {
+export class CreateEmployeeComponent {
+  employeeForm!: FormGroup;
+
+ 
+
+
+
+
+  newEmployee: any = {
+     firstname: '',
+    lastname: '',
+    email: ''
+  };
+  selectedEmployee: any = {
+    firstname: '',
+    lastname: '',
+    email: ''
+  };
 
  employees:any[]=[];
- newEmployee:any={};
- selectedEmployee:any={};
+ 
+ employeeData={
+  firstname:this.newEmployee.firstname,
+  lastname:this.newEmployee.lastname,
+  email:this.newEmployee.email
+ };
+ 
  isAddingEmployee:boolean=false;
  modalRef!: NgbModalRef;
 
@@ -28,23 +51,60 @@ export class CreateEmployeeComponent implements OnInit {
  totalItems=5;
  active=1;
  page=1;
- 
+ action:string='add';
  
  closeResult = '';
   content!: TemplateRef<any>;
 updateEmployeeModal!: TemplateRef<any>;
 deleteEmployeeModal!: TemplateRef<any>;
+  firstnameCtrl: any;
+  emailCtrl: any;
+  lastnameCtrl: any;
 
 
  // myform:FormGroup;
 
-  constructor( private modalService: NgbModal,private employeeservice: EmployeeServiceService){
+  constructor(  private modalService: NgbModal,private employeeservice: EmployeeServiceService  , private fb: FormBuilder ){
+
+  
+
+    
 
   }
   ngOnInit() {
     this.FetchEmployees();
+  
+    this.employeeForm = this.fb.group({
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]]
+    });
+
+    this.firstnameCtrl = this.employeeForm.get('firstname');
+    this.lastnameCtrl = this.employeeForm.get('lastname');
+    this.emailCtrl = this.employeeForm.get('email');
+
 
   }
+
+  get f() {
+    return this.employeeForm.controls;
+  }
+
+
+  // handleEmployee(event: Event) {
+  //   const target = event.target as HTMLInputElement;
+  //   const value = target.value;
+  
+  //   if (this.action === 'add') {
+  //     this.newEmployee.firstname = value;
+  //   } else {
+  //     this.selectedEmployee.firstname = value;
+  //   }
+  // }
+
+
+
  
 
   FetchEmployees(){
@@ -67,29 +127,36 @@ deleteEmployeeModal!: TemplateRef<any>;
 
   }
 
+
+
+
+
+
   AddEmployee(){
-    this.employeeservice.createUser(this.newEmployee).subscribe((response)=>{
+   
+
+    this.employeeservice.createUser(this.employeeForm.value).subscribe((response)=>{
       
-    
-    // If the new employee should be on the current page, insert it
-    
-      this.employees.push(response)
-      this.newEmployee={};
+      this.employees.push(response);
+      this.employeeForm.reset();
+      
+      
       this.modalRef.close();
       this.totalItems++;
     
-    });
+    },
+    (error) => {
+      console.error("Error adding employee:", error);
+    }
+    );
   }
-//  toggleAddEmployeeForm(){
-//   this.isAddingEmployee=!this.isAddingEmployee;
-//   if(!this.isAddingEmployee){
-//     this.newEmployee={}
-//   }
 
-//  }
- openAddEmployeeModal(AddEmployeeModal:TemplateRef<any>){
-  this.newEmployee={}
-  this.modalRef=this.modalService.open(AddEmployeeModal,{ariaLabelledBy:'modal-basic-title'});
+ openAddEmployeeModal(AddorupdateEmployeeModal:TemplateRef<any>){
+  this.isAddingEmployee = true;
+   this.selectedEmployee={}
+   this.employeeForm.reset();
+   this.action='add'
+  this.modalRef=this.modalService.open(AddorupdateEmployeeModal,{ariaLabelledBy:'modal-basic-title'});
  }
   
     employeeDetails(arg0: any) {
@@ -116,7 +183,7 @@ deleteEmployeeModal!: TemplateRef<any>;
         this.modalRef.close();
       },
       (error)=>{
-        console.log("error deletng employee:",error);
+        console.log("error deleting employee:",error);
       }
 
       );
@@ -126,7 +193,9 @@ deleteEmployeeModal!: TemplateRef<any>;
 
 
     openDeleteEmployeeModal(deleteEmployeeModal: TemplateRef<any>, employee: any) {
+      this.isAddingEmployee = false;
       this.selectedEmployee = { ...employee }; // Make a copy of the selected employee
+      this.action='add';
       this.modalService.open(deleteEmployeeModal, { ariaLabelledBy: 'modal-basic-title' });
       
     }
@@ -134,7 +203,7 @@ deleteEmployeeModal!: TemplateRef<any>;
 
 
     Updateemployee() {
-      this.employeeservice.updateEmployee(this.selectedEmployee.id,this.selectedEmployee).subscribe((response)=>{
+      this.employeeservice.updateEmployee(this.selectedEmployee.id,this.employeeForm.value).subscribe((response)=>{
         console.log('Employee updated successfully:', response);
         const index = this.employees.findIndex((emp:any) => emp.id === this.selectedEmployee.id);
         if (index !== -1) {
@@ -147,11 +216,30 @@ deleteEmployeeModal!: TemplateRef<any>;
    
     }
 
-    openUpdateEmployeeModal(updateEmployeeModal: TemplateRef<any>, employee: any) {
+
+    openUpdateEmployeeModal(AddorupdateEmployeeModal: TemplateRef<any>, employee: any) {
+      this.isAddingEmployee = false;
       this.selectedEmployee = { ...employee }; 
-       this.modalService.open(updateEmployeeModal, { ariaLabelledBy: 'modal-basic-title' });
+      this.action='update'
+
+      this.employeeForm.patchValue({
+        firstname: this.selectedEmployee.firstname,
+        lastname: this.selectedEmployee.lastname,
+        email: this.selectedEmployee.email
+      });
+
+
+
+
+
+
+
+
+
+       this.modalService.open(AddorupdateEmployeeModal, { ariaLabelledBy: 'modal-basic-title' });
       
     }
+   
  
 
 	
@@ -170,14 +258,6 @@ deleteEmployeeModal!: TemplateRef<any>;
 	 }
 
 
-
-
-
-
-
-
-  
-  
     }
 
   

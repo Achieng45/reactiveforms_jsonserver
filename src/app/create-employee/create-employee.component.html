@@ -30,13 +30,10 @@
             <td class="px-4">{{employee.lastname}}</td>
             <td class="px-4"> {{employee.email}}</td>
             <td>
-                <!-- <button class="btn btn-primary " (click)="AddEmployee" style="margin-left: 10px;">Add  Employee</button>
-                <button (click)="deleteEmployee()"class="btn btn-danger"style="margin-left:10px">Delete</button>
-                <button (click)="employeeDetails(employee.id)"class="btn btn-primary"style="margin-left:10px">View</button>
-                <button class="btn btn-primary " (click)="open(content)" style="margin-left: 10px;">Add  Employee</button> -->
+                
                 <button (click)="openViewEmployeeModal(viewEmployeeModal,employee)" class="btn btn-info">View</button>
-              <button (click)="openUpdateEmployeeModal(updateEmployeeModal,employee)" class="btn btn-primary" style="margin-left: 10px;">Update</button>
-              <!-- <button class="btn btn-primary " (click)="openAddEmployeeModal(AddEmployeeModal)" style="margin-left: 10px;">Add  Employee</button> -->
+              <button (click)="openUpdateEmployeeModal(AddorupdateEmployeeModal,employee)" class="btn btn-primary" style="margin-left: 10px;">Update</button>
+              
               <button (click)="openDeleteEmployeeModal(deleteEmployeeModal,employee)" class="btn btn-danger" style="margin-left: 10px;">Delete</button>
             </td>
             
@@ -57,113 +54,57 @@
 </div>
 </li>
 <li [ngbNavItem]="2">
-  <button ngbNavLink   (click)="openAddEmployeeModal(AddEmployeeModal)">Add Employee</button>
+  <button ngbNavLink   (click)="openAddEmployeeModal(AddorupdateEmployeeModal)">Add Employee</button>
   <ng-template ngbNavContent></ng-template>
   </li>
 </ul>
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
 
-
-
-<!-- 
- <ng-template #content let-modal>
-	<div class="modal-header">
-        <h2>Add Employee</h2>
-		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-	</div>
-	<div class="modal-body">
-        <div class="col">
-            <form (ngSubmit)="AddEmployee()">
-                <div class="form-group">
-                <label for="firstname">First Name</label>
-                <input type="text" class="form-control" id="firstname" [(ngModel)]="newEmployee.firstname" name="firstname" required>
-                </div>
-                <div class="form-group">
-                <label for="firstname">Last Name</label>
-                <input type="text" class="form-control" id="lastname" [(ngModel)]="newEmployee.lastname" name="lastname" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="lastname" [(ngModel)]="newEmployee.email" name="email" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Employee</button>
-            </form>
-        </div>
-	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
-	</div>
-</ng-template>  -->
-
-
-       
-       
-  <ng-template #AddEmployeeModal let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title">Add Employee</h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="col">
-      <form (ngSubmit)="AddEmployee()" >
+ <ng-template #AddorupdateEmployeeModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ action === 'add' ? 'Add Employee' : 'Update Employee' }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="col">
+      <form [formGroup]="employeeForm" (ngSubmit)="action === 'add' ? AddEmployee() : Updateemployee()">
         <div class="form-group">
           <label for="firstname">First Name</label>
-          <input type="text" class="form-control" id="firstname" name="firstname" [(ngModel)]="newEmployee.firstname" required>
+          <input type="text" class="form-control" formControlName="firstname">
+          <div *ngIf="firstnameCtrl.invalid && (firstnameCtrl.dirty || firstnameCtrl.touched)" class="alert alert-danger">
+            <div *ngIf="firstnameCtrl.errors?.required">First Name is required</div>
+          </div>
         </div>
         <div class="form-group">
           <label for="lastname">Last Name</label>
-          <input type="text" class="form-control" id="lastname" name="lastname" [(ngModel)]="newEmployee.lastname" required>
+          <input type="text" class="form-control" formControlName="lastname">
+          <div *ngIf="lastnameCtrl.invalid && (lastnameCtrl.dirty || lastnameCtrl.touched)" class="alert alert-danger">
+            <div *ngIf="lastnameCtrl.errors?.required">Last Name is required</div>
+          </div>
         </div>
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" class="form-control" id="email" name="email" [(ngModel)]="newEmployee.email" required>
+          <input type="email" class="form-control" formControlName="email">
+          <div *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)" class="alert alert-danger">
+            <div *ngIf="emailCtrl.errors?.required">Email is required</div>
+            <div *ngIf="emailCtrl.errors?.email">Invalid email format</div>
+          </div>
         </div>
         <div>
-        <button type="submit" class="btn btn-primary">Add Employee</button>
+          <button type="submit" class="btn btn-primary" [disabled]="employeeForm.invalid">
+            {{ action === 'add' ? 'Add' : 'Update' }} Employee
+          </button>
         </div>
       </form>
     </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('close click')">Close</button>
+  </div>
+</ng-template>
 
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('close click')">Close</button>
-    </div>
-    </ng-template>
-  
-  <ng-template #updateEmployeeModal let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title">Update Employee</h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form (ngSubmit)="Updateemployee()" #updateEmployeeForm="ngForm">
-        <div class="form-group">
-          <label for="updateFirstName">First Name</label>
-          <input type="text" class="form-control" id="updateFirstName" name="updateFirstName" [(ngModel)]="selectedEmployee.firstname" required>
-        </div>
-        <div class="form-group">
-          <label for="updateLastName">Last Name</label>
-          <input type="text" class="form-control" id="updateLastName" name="updateLastName" [(ngModel)]="selectedEmployee.lastname" required>
-        </div>
-        <div class="form-group">
-          <label for="updateEmail">Email</label>
-          <input type="email" class="form-control" id="updateEmail" name="updateEmail" [(ngModel)]="selectedEmployee.email" required>
-        </div>
-        <div>
-        <button type="submit" class="btn btn-primary">Update Employee</button>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="modal.close('close click')">Close</button>
-    </div>
-  </ng-template>
-
-  <!-- Other modals for viewing and deleting employees -->
 
   <ng-template #viewEmployeeModal let-modal>
     <div class="modal-header">
@@ -177,7 +118,7 @@
         <p><strong>First Name:</strong> {{ selectedEmployee?.firstname }}</p>
         <p><strong>Last Name:</strong> {{ selectedEmployee?.lastname }}</p>
         <p><strong>Email:</strong> {{ selectedEmployee?.email }}</p>
-        <!-- Add more details as needed -->
+      
       </div>
     </div>
     <div class="modal-footer">
